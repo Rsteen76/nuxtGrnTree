@@ -14,9 +14,15 @@ const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 3000
 var http = require('http')
 
-app.set('port', port)
-
 app.use(cors())
+
+const {
+  apiRoutes
+} = require('../server/routes/index')
+const {
+  webRoutes
+} = require('../server/routes/index')
+
 // Use native ES6 Promises since mongoose's are deprecated.
 mongoose.Promise = global.Promise
 
@@ -43,21 +49,10 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'dist')));
 
-const {
-  apiRoutes
-} = require('../server/routes/index')
-const {
-  webRoutes
-} = require('../server/routes/index')
+
 
 app.use('/api', apiRoutes);
 app.use('/web', webRoutes);
-
-var server = http.createServer(app)
-var server = app.listen(process.env.PORT || 8080, function () {
-var port = server.address().port;
-console.log("App now running on port", port);
-});
 
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
@@ -83,4 +78,5 @@ async function start() {
     badge: true
   })
 }
+module.exports = app;
 start()
